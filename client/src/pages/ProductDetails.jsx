@@ -12,16 +12,14 @@ const ProductDetails = () => {
   const [thumbnail, setThumbnail] = useState(null);
 
   const product = products.find((item) => item._id === id);
-
   useEffect(() => {
-    if (products.length > 0) {
-      let productsCopy = products.slice();
-      productsCopy = productsCopy.filter(
-        (item) => product.category === item.category
+    if (products.length > 0 && product) {
+      let productsCopy = products.filter(
+        (item) => product.category[0] === item.category[0]
       );
       setRelatedProducts(productsCopy.slice(0, 5));
     }
-  }, [products]);
+  }, [products, product]);
 
   useEffect(() => {
     setThumbnail(product?.image[0] ? product.image[0] : null);
@@ -32,9 +30,9 @@ const ProductDetails = () => {
       <div className="mt-12">
         <p>
           <Link to={"/"}>Home</Link> /<Link to={"/products"}> Products</Link> /
-          <Link to={`/products/${product.category.toLowerCase()}`}>
+          <Link to={`/products/${product.category[0].toLowerCase()}`}>
             {" "}
-            {product.category}
+            {product.category[0]}
           </Link>
           /<span className="text-primary"> {product.name}</span>
         </p>
@@ -44,7 +42,7 @@ const ProductDetails = () => {
             <div className="flex flex-col gap-3">
               {product.image.map((image, index) => (
                 <div
-                  key={index}
+                  key={`${image}-${index}`}
                   onClick={() => setThumbnail(image)}
                   className="border max-w-24 border-gray-500/30 rounded overflow-hidden cursor-pointer"
                 >
@@ -66,6 +64,7 @@ const ProductDetails = () => {
                 .fill("")
                 .map((_, i) => (
                   <img
+                    key={i}
                     src={i < 4 ? assets.star_icon : assets.star_dull_icon}
                     alt=""
                     className="md:w-4 w-3.5"
@@ -124,7 +123,7 @@ const ProductDetails = () => {
             {relatedProducts
               .filter((product) => product.inStock)
               .map((product, index) => (
-                <ProductCard key={index} product={product} />
+                <ProductCard key={product._id} product={product} />
               ))}
           </div>
           <button

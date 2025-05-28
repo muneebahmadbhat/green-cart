@@ -121,7 +121,6 @@ export const AppContextProvider = ({ children }) => {
   // Update DataBase Cart Items
   useEffect(() => {
     const updateCart = async () => {
-      console.log("Updating cart:", cartItems); // Debug log
       try {
         const { data } = await axios.post("/api/cart/update", { cartItems });
         if (!data.success) {
